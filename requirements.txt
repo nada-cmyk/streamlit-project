@@ -3,5 +3,4 @@ openai
 pyupbit
 ta
 streamlit
-sqlite3
 pandas
