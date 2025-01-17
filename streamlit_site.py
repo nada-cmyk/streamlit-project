@@ -1,6 +1,7 @@
 import streamlit as st
 import sqlite3
 import pandas as pd
+import datetime
 
 def fetch_table_data(table_name):
     """Fetch data from a given table."""
@@ -10,16 +11,29 @@ def fetch_table_data(table_name):
     conn.close()
     return df
 
+def fetch_recent_trades(table_name, days=3):
+    """Fetch recent N days of data from a given table."""
+    conn = sqlite3.connect("trades.db")
+    now = datetime.datetime.now()
+    past_date = now - datetime.timedelta(days=days)
+    query = f"""
+        SELECT * FROM {table_name}
+        WHERE timestamp >= '{past_date.isoformat()}'
+    """
+    df = pd.read_sql_query(query, conn)
+    conn.close()
+    return df
+
 def main():
-    st.title("AI코인 투자기록")
+    st.title("AI코인 투자기록(5분마다 업데이트)")
 
     try:
         # 데이터 가져오기
         profit_data = fetch_table_data("profit_rates")
         ethprofit_data = fetch_table_data("ethprofit_rates")
         allprofit_data = fetch_table_data("allprofit_rates")
-        trades_data = fetch_table_data("trades")
-        ethcoin_trades_data = fetch_table_data("ethcoin_trades")
+        btc_trades_recent = fetch_recent_trades("trades", days=3)  # 최근 3일 비트코인 거래내역
+        eth_trades_recent = fetch_recent_trades("ethcoin_trades", days=3)  # 최근 3일 이더리움 거래내역
         btc_apology_data = fetch_table_data("btc_apology")
         eth_apology_data = fetch_table_data("eth_apology")
         btc_krw = fetch_table_data("global_state")
@@ -53,11 +67,11 @@ def main():
             st.markdown("**이더리움 잔액**")
             st.dataframe(eth_krw)            
 
-        st.subheader("비트코인 거래내역")
-        st.dataframe(trades_data)
+        st.subheader("비트코인 거래내역(최근 3일)")
+        st.dataframe(btc_trades_recent)
 
-        st.subheader("이더리움 거래내역")
-        st.dataframe(ethcoin_trades_data)
+        st.subheader("이더리움 거래내역(최근 3일)")
+        st.dataframe(eth_trades_recent)
 
         st.subheader("비트코인 거래에 대한 평가 (매일 오후 8시에 업데이트)")
         st.dataframe(btc_apology_data)
