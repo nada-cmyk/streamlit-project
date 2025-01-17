@@ -27,7 +27,7 @@ def init_db():
                  )''')
 
     # 초기값 설정
-    initial_investment = 1500000  # 초기 투자 금액
+    initial_investment = 2000000  # 초기 투자 금액
     total_assets = initial_investment  # 초기에는 전액 현금 상태로 가정
     profit_rate = 0.0  # 초기 수익률은 0%
 
@@ -160,11 +160,11 @@ def schedule_total_assets_and_profit_rate_update():
             total_assets_update_active = False
 
     # 5분마다 update_total_assets_and_profit_rate 함수 실행
-    schedule.every(5).minutes.do(update_total_assets_and_profit_rate)
+    schedule.every(1).minutes.do(update_total_assets_and_profit_rate)
     # 5분마다 자산 상태 확인 및 활성화
-    schedule.every(5).minutes.do(check_and_activate_updates)
+    schedule.every(1).minutes.do(check_and_activate_updates)
 
-    print("Total Assets and Profit Rate Update Scheduled Every 5 Minutes.")
+    print("Total Assets and Profit Rate Update Scheduled Every Minutes.")
 
     while True:
         schedule.run_pending()  # 예약된 작업 실행
