@@ -7,20 +7,6 @@ import datetime
 
 
 
-def push_to_github():
-    """Push the trades.db file to GitHub (only works in local environment)."""
-    try:
-        repo_path = "C:\\Users\\Public\\gptcoin"  # 로컬 저장소 경로
-        os.chdir(repo_path)
-        subprocess.run(["git", "add", "trades.db"], check=True)
-        subprocess.run(["git", "commit", "-m", "Update database"], check=True)
-        subprocess.run(["git", "push"], check=True)
-        return "데이터베이스가 성공적으로 GitHub에 업데이트되었습니다!"
-    except FileNotFoundError:
-        return "GitHub 업데이트 기능은 로컬 환경에서만 동작합니다."
-    except subprocess.CalledProcessError as e:
-        return f"GitHub 업데이트 실패: {e}"
-
 def fetch_table_data(table_name):
     """Fetch data from a given table."""
     conn = sqlite3.connect("trades.db")
@@ -45,15 +31,7 @@ def fetch_recent_trades(table_name, days=3):
 
 
 def main():
-    st.title("AI코인 투자기록 (5분마다 업데이트)")
-
-    # GitHub에 데이터베이스 업데이트 버튼
-    if st.button("GitHub에 업데이트"):
-        result = push_to_github()
-        if "성공" in result:
-            st.success(result)
-        else:
-            st.error(result)
+    st.title("AI코인 투자기록 (1분마다 업데이트)")
 
     try:
         # 데이터 가져오기
