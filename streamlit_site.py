@@ -6,8 +6,9 @@ import pandas as pd
 import datetime
 
 
+
 def push_to_github():
-    """Push the trades.db file to GitHub."""
+    """Push the trades.db file to GitHub (only works in local environment)."""
     try:
         repo_path = "C:\\Users\\Public\\gptcoin"  # 로컬 저장소 경로
         os.chdir(repo_path)
@@ -15,9 +16,10 @@ def push_to_github():
         subprocess.run(["git", "commit", "-m", "Update database"], check=True)
         subprocess.run(["git", "push"], check=True)
         return "데이터베이스가 성공적으로 GitHub에 업데이트되었습니다!"
+    except FileNotFoundError:
+        return "GitHub 업데이트 기능은 로컬 환경에서만 동작합니다."
     except subprocess.CalledProcessError as e:
         return f"GitHub 업데이트 실패: {e}"
-
 
 def fetch_table_data(table_name):
     """Fetch data from a given table."""
