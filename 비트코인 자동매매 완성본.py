@@ -99,11 +99,11 @@ def init_db():
         c.execute("ALTER TABLE trades ADD COLUMN profit REAL")  # 수익
 
     # 초기값 설정
-    initial_investment = 900000  # 초기 투자 금액
+    initial_investment = 1000000  # 초기 투자 금액
     total_assets = initial_investment  # 초기에는 전액 현금 상태로 가정
     profit_rate = 0.0  # 초기 수익률은 0%
 
-    c.execute("INSERT OR IGNORE INTO global_state (key, value) VALUES ('available_budget', 900000)")
+    c.execute("INSERT OR IGNORE INTO global_state (key, value) VALUES ('available_budget', 1000000)")
     c.execute("INSERT OR IGNORE INTO profit_rates (key, value) VALUES ('initial_investment', ?)",
               (f"{initial_investment:,} KRW",))
     c.execute("INSERT OR IGNORE INTO profit_rates (key, value) VALUES ('total_assets', ?)",
@@ -118,7 +118,7 @@ def init_db():
 # 프로그램 실행 시 데이터베이스 초기화
 init_db()
 
-initial_investment = 900000  # 초기 투자 금액
+initial_investment = 1000000  # 초기 투자 금액
 # --- 수익률 기록 ---
 # 수익률 기록 함수
 def record_profit_rate(initial_investment, available_budget, my_btc, current_price):
@@ -191,8 +191,8 @@ def start_profit_rate_updater(initial_investment):
                 else:
                     print("Failed to fetch current price for profit rate update.")
 
-                # 5분 대기
-                time.sleep(300)
+                # 1분 대기
+                time.sleep(60)
 
             except Exception as e:
                 print(f"Error in profit rate updater: {e}")
@@ -221,7 +221,7 @@ def load_available_budget():
     c.execute("SELECT value FROM global_state WHERE key = 'available_budget'")
     row = c.fetchone()
     conn.close()
-    return row[0] if row else 900000  #기본값 90만 원 반환
+    return row[0] if row else 1000000  #기본값 90만 원 반환
 
 # --- 투자 가능 금액 저장 ---
 def save_available_budget(budget):
@@ -713,7 +713,7 @@ def fetch_bitcoin_news():
         return []
 
 # --- 글로벌 변수 추가 ---
-initial_budget = 900000  # 초기 예산
+initial_budget = 1000000  # 초기 예산
 available_budget = initial_budget  # 현재 사용 가능 금액
 suspend_compare_and_buy = False  # compare_and_buy 동작 여부를 결정하는 플래그
 
@@ -866,7 +866,7 @@ def ai_trading(current_hour, current_minute):
                 "content": (
                 f"You are a Bitcoin investor who trades every 4 hours. My goal is to continue increasing the available budget through Bitcoin. "
                 "The available budget increases when you make a profit in Bitcoin. However, if you lose money, the available budget decreases. "
-                "The initial available budget was 900,000 KRW. "
+                "The initial available budget was 1,000,000 KRW. "
                 f"Your price prediction accuracy so far is {latest_accuracy:.2f}%. "
                 "First, take the data below and predict the price of Bitcoin in 4 hours, 12 hours, and 1 day. "
                 "Then, based on the expected results, my available budget, BTC balance, and your prediction accuracy, "
